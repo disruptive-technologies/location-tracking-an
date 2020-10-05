@@ -12,9 +12,9 @@ import numpy             as np
 import matplotlib.pyplot as plt
 
 # project
-from project.sensors import Sensor
+from tracking.sensors import Sensor
 from config.styling import styling_init
-import project.helpers as hlp
+import tracking.helpers as hlp
 import config.parameters as prm
 from config.zones import zones
 

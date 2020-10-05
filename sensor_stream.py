@@ -1,5 +1,5 @@
 # project
-from project.director import Director
+from tracking.director import Director
 
 # Fill in from the Service Account and Project:
 USERNAME   = 'btqs82b24t5g00b250a0'       # this is the key
