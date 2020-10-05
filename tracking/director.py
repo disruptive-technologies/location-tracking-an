@@ -32,7 +32,7 @@ class Director():
         self.last_update = -1
 
         # initialise plot styling
-        # styling_init()
+        styling_init()
 
         # set stream endpoint
         self.stream_endpoint = "{}/projects/{}/devices:stream".format(self.api_url_base, self.project_id)
@@ -400,7 +400,7 @@ class Director():
                     zone_range = np.where(np.array(sensor.zm)==sensor.zm[rr[i-1]])[0]
                     zlim = [min(zone_range)-0.5, max(zone_range)+0.5]
                     if legend_bool[sensor.zm[rr[i-1]]]:
-                        label = 'Zone {}'.format(sensor.zm[rr[i-1]])
+                        label = 'Loc {}'.format(sensor.zm[rr[i-1]])
                         if sensor.zm[rr[i-1]] == sensor.zm_unknown:
                             label = 'Uncategorized'
                         self.ax[s].fill_between([left, right], zlim[0], zlim[1], alpha=0.33, color=color, label=label)
@@ -416,13 +416,13 @@ class Director():
             labels = [item.get_text() for item in self.ax[s].get_yticklabels()]
             ticks  = []
             for i, key in enumerate(sensor.ccons.keys()):
-                labels[i] = key
+                labels[i] = key[-5:]
                 ticks.append(i)
             self.ax[s].set_yticks(ticks)
             self.ax[s].set_yticklabels(labels)
             self.ax[s].set_ylim([-0.5, len(sensor.ccons)-0.5])
             self.ax[s].set_xlim(tlim)
-            self.ax[s].legend([sensor.sensor_id[-4:]], loc='center left')
+            self.ax[s].legend([sensor.sensor_id[-5:]], loc='center left')
             
             spine = self.ax[s].spines['right']
             spine.set_visible(False)

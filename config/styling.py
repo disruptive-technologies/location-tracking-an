@@ -3,6 +3,6 @@ import matplotlib
 
 def styling_init():
     # font
-    font = {'size': 16}
+    font = {'size': 12}
     matplotlib.rc('font', **font)
 
