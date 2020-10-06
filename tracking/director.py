@@ -57,14 +57,15 @@ class Director():
         """
 
         # create parser object
-        parser = argparse.ArgumentParser(description='Explanatory information here.')
+        parser = argparse.ArgumentParser(description='Implementation For Tracking Assets Between Locations of Cloud Connectors.')
 
         # get UTC time now
         now = (datetime.datetime.utcnow().replace(microsecond=0)).isoformat() + 'Z'
 
         # general arguments
-        parser.add_argument('--starttime', metavar='', help='Event history UTC starttime [YYYY-MM-DDTHH:MM:SSZ].', required=False, default=now)
-        parser.add_argument('--endtime',   metavar='', help='Event history UTC endtime [YYYY-MM-DDTHH:MM:SSZ].',   required=False, default=now)
+        parser.add_argument('--starttime',  metavar='', help='Event history UTC starttime [YYYY-MM-DDTHH:MM:SSZ].', required=False, default=now)
+        parser.add_argument('--endtime',    metavar='', help='Event history UTC endtime [YYYY-MM-DDTHH:MM:SSZ].',   required=False, default=now)
+        parser.add_argument('--timeout',    metavar='', help='Seconds before an asset is considered between location.', required=False, default=60*30)
 
         # boolean flags
         parser.add_argument('--no-plot',   action='store_true', help='Suppress streaming plot.')
@@ -253,7 +254,7 @@ class Director():
                 if sensor.buffering and len(sensor.event_buffer) > 0 and unix_now - sensor.last_event > prm.buffertime:
                     sensor.update_event_data(unix_now)
 
-                elif unix_now - sensor.last_event > prm.timeout:
+                elif unix_now - sensor.last_event > self.args['timeout']:
                     sensor.update_empty(unix_now)
 
             # iterate time
@@ -302,7 +303,7 @@ class Director():
                         self.plot(blocking=False, show=False)
 
                 # check for sensor timeout
-                elif now - sensor.last_event > prm.timeout:
+                elif now - sensor.last_event > self.args['timeout']:
                     sensor.update_empty(now)
 
             time.sleep(prm.streamtick)
@@ -353,6 +354,8 @@ class Director():
 
     def initialise_plot(self):
         self.fig, self.ax = plt.subplots(len(self.sensors), 1, sharex=True)
+        if len(self.sensors) < 2:
+            self.ax = [self.ax]
 
 
     def plot(self, blocking=True, show=True):
@@ -363,6 +366,7 @@ class Director():
         # initialise xlim lists
         xlim = [np.inf, -np.inf]
         tlim = [np.inf, -np.inf]
+        xlim_updated = [False, False]
 
         # legend boolean to avoid duplication
         legend_bool = [True for i in range(len(zones)+1)]
@@ -374,12 +378,15 @@ class Director():
             # update xlim
             ux = np.array(sensor.unixtime)
             ts = sensor.get_timestamps()
-            if ux[1] < xlim[0]:
+            if len(ux) > 1 and ux[1] < xlim[0]:
                 xlim[0] = ux[1]
                 tlim[0] = ts[1]
-            if ux[-1] > xlim[1]:
+                xlim_updated[0] = True
+
+            if len(ux) > 1 and ux[-1] > xlim[1]:
                 xlim[1] = ux[-1]
                 tlim[1] = ts[-1]
+                xlim_updated[1] = True
 
             # fill between
             rr = np.array(sensor.max_rssi)
@@ -421,7 +428,8 @@ class Director():
             self.ax[s].set_yticks(ticks)
             self.ax[s].set_yticklabels(labels)
             self.ax[s].set_ylim([-0.5, len(sensor.ccons)-0.5])
-            self.ax[s].set_xlim(tlim)
+            if xlim_updated[0] and xlim_updated[1]:
+                self.ax[s].set_xlim(tlim)
             self.ax[s].legend([sensor.sensor_id[-5:]], loc='center left')
             
             spine = self.ax[s].spines['right']
