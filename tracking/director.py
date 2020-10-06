@@ -16,7 +16,7 @@ from tracking.sensors import Sensor
 from config.styling import styling_init
 import tracking.helpers as hlp
 import config.parameters as prm
-from config.zones import zones
+from config.locations import locations
 
 
 class Director():
@@ -369,7 +369,7 @@ class Director():
         xlim_updated = [False, False]
 
         # legend boolean to avoid duplication
-        legend_bool = [True for i in range(len(zones)+1)]
+        legend_bool = [True for i in range(len(locations)+1)]
 
         # draw sensor data
         for s, sensor in enumerate(self.sensors):
@@ -397,21 +397,21 @@ class Director():
                 elif rr[ix] == None:
                     ix = i
 
-                elif rr[i] == None or sensor.zm[rr[i]] != sensor.zm[rr[i-1]] or i == len(ux)-1:
+                elif rr[i] == None or sensor.location_map[rr[i]] != sensor.location_map[rr[i-1]] or i == len(ux)-1:
                     left = ts[ix]
                     right = ts[i]
-                    color = 'C{}'.format(sensor.zm[rr[i-1]])
-                    if sensor.zm[rr[i-1]] == sensor.zm_unknown:
+                    color = 'C{}'.format(sensor.location_map[rr[i-1]])
+                    if sensor.location_map[rr[i-1]] == sensor.location_map_unknown:
                         color = 'gray'
                     # self.ax[s].fill_between([left, right], 0, len(sensor.ccons)-1, alpha=0.33, color=color)
-                    zone_range = np.where(np.array(sensor.zm)==sensor.zm[rr[i-1]])[0]
+                    zone_range = np.where(np.array(sensor.location_map)==sensor.location_map[rr[i-1]])[0]
                     zlim = [min(zone_range)-0.5, max(zone_range)+0.5]
-                    if legend_bool[sensor.zm[rr[i-1]]]:
-                        label = 'Loc {}'.format(sensor.zm[rr[i-1]])
-                        if sensor.zm[rr[i-1]] == sensor.zm_unknown:
+                    if legend_bool[sensor.location_map[rr[i-1]]]:
+                        label = 'Loc {}'.format(sensor.location_map[rr[i-1]])
+                        if sensor.location_map[rr[i-1]] == sensor.location_map_unknown:
                             label = 'Uncategorized'
                         self.ax[s].fill_between([left, right], zlim[0], zlim[1], alpha=0.33, color=color, label=label)
-                        legend_bool[sensor.zm[rr[i-1]]] = False
+                        legend_bool[sensor.location_map[rr[i-1]]] = False
                     else:
                         self.ax[s].fill_between([left, right], zlim[0], zlim[1], alpha=0.33, color=color)
                     ix = i

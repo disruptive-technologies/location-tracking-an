@@ -1,7 +1,7 @@
 # project
 import tracking.helpers as hlp
 import config.parameters as prm
-from config.zones import zones
+from config.locations import locations
 
 
 class Ccon():
@@ -37,20 +37,20 @@ class Sensor():
 
     
     def __initialise_ccons_list(self):
-        for zone in zones:
-            for ccon in zone['ccons']:
+        for loc in locations:
+            for ccon in loc['ccons']:
                 self.ccons[ccon] = len(self.ccons)
                 self.rssi.append([None])
         self.unixtime.append(None)
         self.max_rssi.append(None)
         self.n_events += 1
 
-        # create zone map
-        self.zm = []
-        for i in range(len(zones)):
-            for j in range(len(zones[i]['ccons'])):
-                self.zm.append(i)
-                self.zm_unknown = i + 1
+        # create locations map
+        self.location_map = []
+        for i in range(len(locations)):
+            for j in range(len(locations[i]['ccons'])):
+                self.location_map.append(i)
+                self.location_map_unknown = i + 1
 
 
     def get_timestamps(self):
@@ -106,7 +106,7 @@ class Sensor():
                 # add ccon id to index lookup dictionary
                 self.ccons[ccon['id']] = len(self.ccons)
                 self.ccon_ids.append(ccon['id'])
-                self.zm.append(self.zm_unknown)
+                self.location_map.append(self.location_map_unknown)
             
             # append rssi
             self.rssi[self.ccons[ccon['id']]].append(ccon['signalStrength'])
