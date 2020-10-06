@@ -430,7 +430,7 @@ class Director():
             self.ax[s].set_ylim([-0.5, len(sensor.ccons)-0.5])
             if xlim_updated[0] and xlim_updated[1]:
                 self.ax[s].set_xlim(tlim)
-            self.ax[s].legend([sensor.sensor_id[-5:]], loc='upper left')
+            # self.ax[s].legend([sensor.sensor_id[-5:]], loc='upper left')
             
             spine = self.ax[s].spines['right']
             spine.set_visible(False)
