@@ -21,7 +21,7 @@ zones = [
         ]
     },
     {
-        'name': 'zone 2',
+        'name': 'zone 3',
         'ccons': [
             'bmi7k94c0001n77v5r20'
         ]
