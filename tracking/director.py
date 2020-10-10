@@ -1,6 +1,5 @@
 # packages
 import os
-import sys
 import time
 import json
 import argparse
@@ -20,6 +19,12 @@ from config.locations import locations
 
 
 class Director():
+    """
+    Handles all API interfacing, including fetching sensors list and updating them.
+    Control locations list and delegates this information to tracked sensors.
+    When new event data arrives in stream, delegate to the correct sensor for update.
+
+    """
 
     def __init__(self, username='', password='', project_id='', api_url_base=''):
         # give to self
