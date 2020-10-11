@@ -27,19 +27,35 @@ class Director():
     """
 
     def __init__(self, username='', password='', project_id='', api_url_base=''):
-        # give to self
+        """
+        Director class constructor.
+
+        Parameters
+        ----------
+        username : str
+            DT Studio service account key.
+        password : str
+            DT Studio service account secret.
+        project_id : str
+            DT Studio project identifier.
+        api_url_base : str
+            Endpoint for API.
+
+        """
+
+        # give arguments to self
         self.username     = username
         self.password     = password
         self.project_id   = project_id
         self.api_url_base = api_url_base
 
-        # variables
+        # initialise variables
         self.last_update = -1
 
-        # initialise plot styling
+        # initialise plot styling (font size, colors etc)
         styling_init()
 
-        # set stream endpoint
+        # set stream endpoint for API
         self.stream_endpoint = "{}/projects/{}/devices:stream".format(self.api_url_base, self.project_id)
 
         # parse system arguments
@@ -106,6 +122,11 @@ class Director():
 
 
     def __fetch_project_devices(self):
+        """
+        Fetch list of all devices in project from API.
+
+        """
+
         # request list
         devices_list_url = "{}/projects/{}/devices".format(self.api_url_base,  self.project_id)
         device_listing = requests.get(devices_list_url, auth=(self.username, self.password))
@@ -315,6 +336,12 @@ class Director():
 
 
     def listen(self):
+        """
+        Listen for new events from sensors in stream.
+        When new event occurs, delegate data to correct sensor.
+
+        """
+
         # cout
         print("Listening for events... (press CTRL-C to abort)")
     
