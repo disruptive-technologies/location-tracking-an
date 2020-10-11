@@ -1,24 +1,35 @@
 # project
 import tracking.helpers as hlp
-import config.parameters as prm
 from config.locations import locations
-
-
-class Ccon():
-
-    def __init__(self, device_id):
-        # give to self
-        self.device_id = device_id
 
 
 class Sensor():
 
+    """
+    Handles data and new events for a single sensor.
+    One Sensor object per sensor in scheme.
+    Handles buffering scheme for grouping CCONs.
+
+    """
+
     def __init__(self, device, sensor_id):
-        # give to self
+        """
+        Sensor class constructor.
+
+        Parameters
+        ----------
+        device : dict
+            Dictionary of device information fetched from API by Director.
+        sensor_id : str
+            Sensor identifier.
+
+        """
+
+        # give arguments to self
         self.device    = device
         self.sensor_id = sensor_id
 
-        # initialise lists
+        # initialise lists and dictionaries
         self.unixtime = []
         self.values   = []
         self.rssi     = []
@@ -37,19 +48,40 @@ class Sensor():
 
     
     def __initialise_ccons_list(self):
+        """
+        In order to keep the order of zones, initialise internal
+        CCON- and data lists in order provided by locations list.
+
+        """
+
+        # iterate predefined locations
         for loc in locations:
+            # iterate ccons at location
             for ccon in loc['ccons']:
+                # update internal ccon list
                 self.ccons[ccon] = len(self.ccons)
                 self.rssi.append([None])
+
+        # update data lists with initial None value
+        # this is to ensure same length in all lists
         self.unixtime.append(None)
         self.max_rssi.append(None)
+
+        # iterate event counter to reflect initialisation
         self.n_events += 1
 
         # create locations map
+        # this is to relate a location id to each CCON
         self.location_map = []
+
+        # iterate locaitons
         for i in range(len(locations)):
+            # iterate ccons at location
             for j in range(len(locations[i]['ccons'])):
+                # update ccon with the location identifier integer
                 self.location_map.append(i)
+
+                # unknown ccons will have the the id n+1
                 self.location_map_unknown = i + 1
 
 
