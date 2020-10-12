@@ -52,6 +52,9 @@ class Director():
         # initialise variables
         self.last_update = -1
 
+        # initialise a threading locker to avoid conflict
+        self.lock = threading.Lock()
+
         # initialise plot styling (font size, colors etc)
         styling_init()
 
@@ -319,18 +322,19 @@ class Director():
         while True:
             now = time.time()
             print(now)
-            # check buffering status for each sensor
-            for sensor in self.sensors:
-                if sensor.buffering and len(sensor.event_buffer) > 0 and now - sensor.last_event > prm.buffertime:
-                    sensor.update_event_data(now)
+            with self.lock:
+                # check buffering status for each sensor
+                for sensor in self.sensors:
+                    if sensor.buffering and len(sensor.event_buffer) > 0 and now - sensor.last_event > prm.buffertime:
+                        sensor.update_event_data(now)
         
-                    # plot progress
-                    if not self.args['no_plot']:
-                        self.plot(blocking=False, show=False)
+                        # plot progress
+                        if not self.args['no_plot']:
+                            self.plot(blocking=False, show=False)
 
-                # check for sensor timeout
-                elif now - sensor.last_event > self.args['timeout']:
-                    sensor.update_empty(now)
+                    # check for sensor timeout
+                    elif now - sensor.last_event > self.args['timeout']:
+                        sensor.update_empty(now)
 
             time.sleep(prm.streamtick)
 
@@ -364,8 +368,9 @@ class Director():
                     event_data = json.loads(event.data)['result']['event']
         
                     # serve event to director
-                    self.__new_event_data(event_data)
-                    self.new_event = True
+                    with self.lock:
+                        self.__new_event_data(event_data)
+                        self.new_event = True
             
             # catch errors
             # Note: Some VPNs seem to cause quite a lot of packet corruption (?)
