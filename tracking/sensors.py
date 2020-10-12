@@ -86,14 +86,46 @@ class Sensor():
 
 
     def get_timestamps(self):
+        """
+        Returns unixtime axis converted to pandas datetime for visualization purposes.
+
+        Returns
+        -------
+        return : list
+            List of pandas datetime objects converted from unixtimes.
+
+        """
+
         return hlp.ux2tx(self.unixtime)
     
 
     def get_values(self):
+        """
+        Returns values stored in sensor main list.
+
+        Returns
+        -------
+        return : list
+            List of main values of sensor object.
+
+        """
+
         return self.values
 
 
     def new_event_data(self, event):
+        """
+        Receive new event data from Director.
+        Apply new event to buffering scheme where the same 
+        event som different CCONs are combined.
+
+        Parameters
+        ----------
+        event : dict
+            Dictionary of event information received in the stream.
+
+        """
+
         # isolate event ccon
         ccon = event['data']['networkStatus']['cloudConnectors'][0]
 
@@ -118,6 +150,17 @@ class Sensor():
         
 
     def update_event_data(self, ux_calltime):
+        """
+        Updates rssi matrix and CCON lists.
+        Is called when buffer is complete.
+
+        Parameters
+        ----------
+        ux_calltime : int
+            Unixtime when function is called.
+
+        """
+
         # get unixtime of events
         _, ux = hlp.convert_event_data_timestamp(self.event_buffer[-1]['data']['networkStatus']['updateTime'])
         self.unixtime.append(ux_calltime)
@@ -164,6 +207,17 @@ class Sensor():
 
 
     def update_empty(self, ux_calltime):
+        """
+        Appends rssi matrix and other lists with empty / None values.
+        Called when sensor has not talked to a CCON in some time.
+
+        Parameters
+        ----------
+        ux_calltime : int
+            Unixtime when function is called.
+
+        """
+
         self.n_events += 1
 
         # check how much time has passed since last event
