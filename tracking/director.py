@@ -385,12 +385,29 @@ class Director():
 
 
     def initialise_plot(self):
+        """
+        Initialises figure and axes used by plot().
+
+        """
+
         self.fig, self.ax = plt.subplots(len(self.sensors), 1, sharex=True)
         if len(self.sensors) < 2:
             self.ax = [self.ax]
 
 
     def plot(self, blocking=True, show=True):
+        """
+        Visualization of asset tracking results.
+
+        Parameters
+        ----------
+        blocking : boolean
+            Uses blocking matplotlib functions to display an interactive plot if True.
+        show : boolean
+            Calls show() if True. Calls waitforbuttonpress() if False.
+
+        """
+
         # initialise if not open
         if not hasattr(self, 'ax') or not plt.fignum_exists(self.fig.number):
             self.initialise_plot()
