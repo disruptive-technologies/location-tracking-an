@@ -2,9 +2,9 @@
 from tracking.director import Director
 
 # Fill in from the Service Account and Project:
-USERNAME   = 'btqs82b24t5g00b250a0'       # this is the key
-PASSWORD   = '42079d7ddc3a479f82f615a95113da79'     # this is the secret
-PROJECT_ID = 'btnlla14jplfdvvdrc60'                # this is the project id
+USERNAME   = "SERVICE_ACCOUNT_KEY"       # this is the key
+PASSWORD   = "SERVICE_ACCOUT_SECRET"     # this is the secret
+PROJECT_ID = "PROJECT_ID"                # this is the project id
 
 # url base and endpoint
 API_URL_BASE  = 'https://api.disruptive-technologies.com/v2'
