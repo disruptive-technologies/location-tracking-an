@@ -1,7 +1,7 @@
 # Location Tracking
 
 ## What am I?
-This repository contains the example code talked about in [this application note](https://support.disruptive-technologies.com/), presenting a method of using the Disruptive Technologies (DT) Wireless Sensors for tracking assets between different physical locations. Written in Python 3, it uses the DT Developer API to communicate with a DT Studio project and its sensors. 
+This repository contains the example code talked about in [this application note](https://support.disruptive-technologies.com/hc/en-us/articles/360016890899), presenting a method of using the Disruptive Technologies (DT) Wireless Sensors for tracking assets between different physical locations. Written in Python 3, it uses the DT Developer API to communicate with a DT Studio project and its sensors. 
 
 ## Before Running Any code
 A DT Studio project containing any number of sensors should be made. Only sensors with the label 'track' will be fetched and included in the tracking scheme.
